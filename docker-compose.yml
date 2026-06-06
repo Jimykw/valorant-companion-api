@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: valorant-companion-db
+    environment:
+      POSTGRES_DB: valorant_companion
+      POSTGRES_USER: valorant
+      POSTGRES_PASSWORD: valorant123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U valorant -d valorant_companion"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

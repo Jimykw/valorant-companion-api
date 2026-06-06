@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: valorant-companion-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/valorant_companion}
+    username: ${DB_USERNAME:valorant}
+    password: ${DB_PASSWORD:valorant123}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+jwt:
+  secret: ${JWT_SECRET:valorant-companion-dev-secret-change-in-production-min-32-chars}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+valorant-api:
+  base-url: https://valorant-api.com/v1
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    com.valorantcompanion: INFO
+    org.springframework.web: INFO

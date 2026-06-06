@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-app-bg: #0c0c0c;
+  --color-app-surface: #161616;
+  --color-app-surface-hover: #1e1e1e;
+  --color-app-border: #2a2a2a;
+  --color-app-text: #ededed;
+  --color-app-muted: #8a8a8a;
+}
+
+@layer base {
+  body {
+    @apply m-0 min-h-screen bg-app-bg font-sans text-[15px] leading-normal text-app-text;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a2a transparent;
+  }
+}

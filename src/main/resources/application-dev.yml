@@ -1,0 +1,20 @@
+# Perfil local sem Docker/PostgreSQL — banco H2 em memória
+spring:
+  datasource:
+    url: jdbc:h2:mem:valorant_companion;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  flyway:
+    enabled: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    com.valorantcompanion: DEBUG
