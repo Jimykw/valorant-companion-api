@@ -20,6 +20,28 @@ npm run dev
 
 App: **http://localhost:5173** · Docs: **http://localhost:5173/app/docs** · Swagger: **http://localhost:8080/swagger-ui.html**
 
+## Demo online (portfólio)
+
+| Serviço | URL |
+|---------|-----|
+| Frontend | https://valorant-companion.vercel.app |
+| API | https://valorant-companion-api.onrender.com |
+| Swagger | https://valorant-companion-api.onrender.com/swagger-ui.html |
+| Repositório | https://github.com/Jimykw/valorant-companion-api |
+
+> A API no Render (plano free) pode demorar ~1 min na primeira requisição após inatividade (cold start).
+
+### Deploy
+
+**API (Render)** — conecte o repositório em [render.com](https://render.com) → **New Blueprint** → selecione `render.yaml`.
+
+**Frontend (Vercel)** — importe o repo em [vercel.com](https://vercel.com), root directory `frontend`, ou:
+
+```powershell
+cd frontend
+npx vercel --prod
+```
+
 ## Documentação
 
 | Onde | URL |
