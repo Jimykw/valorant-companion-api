@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { valorantApi } from '../api/services'
 import { FavoriteButton } from '../components/FavoriteButton'
@@ -7,8 +7,14 @@ import { PageHeader } from '../components/layout/PageHeader'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Spinner } from '../components/ui/Spinner'
 import { getAgentDescriptionPt } from '../lib/agentDescriptionsPt'
+import { getErrorMessage } from '../lib/errors'
 import { translateRole, translateWeaponCategory } from '../lib/labels'
 import type { Agent, MapItem, Weapon } from '../types/api'
+
+const queryOptions = {
+  retry: 2,
+  retryDelay: (attempt: number) => Math.min(5000 * attempt, 15000),
+}
 
 type Tab = 'agents' | 'maps' | 'weapons'
 
@@ -16,9 +22,11 @@ export function CatalogPage() {
   const [tab, setTab] = useState<Tab>('agents')
   const [search, setSearch] = useState('')
 
-  const agents = useQuery({ queryKey: ['agents'], queryFn: valorantApi.agents })
-  const maps = useQuery({ queryKey: ['maps'], queryFn: valorantApi.maps })
-  const weapons = useQuery({ queryKey: ['weapons'], queryFn: valorantApi.weapons })
+  const agents = useQuery({ queryKey: ['agents'], queryFn: valorantApi.agents, ...queryOptions })
+  const maps = useQuery({ queryKey: ['maps'], queryFn: valorantApi.maps, ...queryOptions })
+  const weapons = useQuery({ queryKey: ['weapons'], queryFn: valorantApi.weapons, ...queryOptions })
+
+  const [slowLoad, setSlowLoad] = useState(false)
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'agents', label: 'Agentes' },
@@ -30,6 +38,15 @@ export function CatalogPage() {
     (tab === 'agents' && agents.isLoading) ||
     (tab === 'maps' && maps.isLoading) ||
     (tab === 'weapons' && weapons.isLoading)
+
+  useEffect(() => {
+    if (!isLoading) {
+      setSlowLoad(false)
+      return
+    }
+    const timer = window.setTimeout(() => setSlowLoad(true), 8000)
+    return () => window.clearTimeout(timer)
+  }, [isLoading])
 
   const filter = <T extends { displayName: string }>(items: T[]) =>
     items.filter((i) => i.displayName.toLowerCase().includes(search.toLowerCase()))
@@ -66,9 +83,36 @@ export function CatalogPage() {
         </div>
 
         {isLoading && (
-          <div className="py-16">
+          <div className="py-16 text-center">
             <Spinner />
+            {slowLoad && (
+              <p className="mx-auto mt-4 max-w-md text-sm text-app-muted">
+                A API no Render (plano gratuito) pode demorar até 1 minuto para acordar na
+                primeira visita. Aguarde ou recarregue a página.
+              </p>
+            )}
           </div>
+        )}
+
+        {tab === 'agents' && agents.isError && (
+          <EmptyState
+            title="Não foi possível carregar os agentes"
+            description={getErrorMessage(agents.error)}
+          />
+        )}
+
+        {tab === 'maps' && maps.isError && (
+          <EmptyState
+            title="Não foi possível carregar os mapas"
+            description={getErrorMessage(maps.error)}
+          />
+        )}
+
+        {tab === 'weapons' && weapons.isError && (
+          <EmptyState
+            title="Não foi possível carregar as armas"
+            description={getErrorMessage(weapons.error)}
+          />
         )}
 
         {tab === 'agents' && agents.data && (

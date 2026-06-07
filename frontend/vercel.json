@@ -1,10 +1,9 @@
 {
-  "build": {
-    "env": {
-      "VITE_API_BASE_URL": "https://valorant-companion-api.onrender.com"
-    }
-  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://valorant-companion-api.onrender.com/api/$1"
+    },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
